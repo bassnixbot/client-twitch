@@ -1,0 +1,28 @@
+{
+  "name": "client-twurple",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch run index.ts",
+    "build": "bun build index.ts --compile --outfile twitchbot_client",
+    "start": "./twitchbot_client"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.22.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@twurple/api": "^7.1.0",
+    "@twurple/auth": "^7.1.0",
+    "@twurple/chat": "^7.1.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.31.2",
+    "humanize-duration-ts": "^2.1.1",
+    "pg": "^8.13.1",
+    "tmi.js": "^1.8.5"
+  }
+}
