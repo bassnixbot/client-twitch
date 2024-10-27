@@ -172,7 +172,7 @@ const emotes = async (
                 clientInfo: clientInfo
             };
 
-            const apiurl_yoink = `${Bun.env.EMOTE_SERVICE_URL}/emotes/yoink`;
+            const apiurl_yoink = `${Bun.env.EMOTE_SERVICE_URL}/emotes/add`;
             response = await runEmoteAPI(yoinkquerybody, apiurl_yoink);
             break;
 
