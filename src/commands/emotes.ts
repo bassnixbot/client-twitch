@@ -145,6 +145,37 @@ const emotes = async (
             response = await runEmoteAPI(addquerybody, apiurl_add);
             break;
 
+        case "steal":
+        case "yoink":
+
+            // dont do perm check bc yoink
+            // // check for perms
+            // const permcheckyoink = await checkseventvpermission(
+            //     cmdArgs.username!!,
+            //     cmdArgs.channel,
+            // );
+
+            if (!permcheckadd?.success) {
+                response = permcheckadd?.error?.errorMessage;
+                break;
+            }
+
+            const isYoinkDefault = cmdoptions["default"] ? true : false;
+
+            const yoinkquerybody = {
+                source: cmdoptions["source"],
+                owner: cmdoptions["owner"],
+                emoterename: cmdoptions["rename"],
+                defaultname: isYoinkDefault,
+                targetemotes: content,
+                targetchannel: clientInfo.userInfo.userName,
+                clientInfo: clientInfo
+            };
+
+            const apiurl_yoink = `${Bun.env.EMOTE_SERVICE_URL}/emotes/yoink`;
+            response = await runEmoteAPI(yoinkquerybody, apiurl_yoink);
+            break;
+
         case "rename":
             // check for perms
             const permcheckrename = await checkseventvpermission(
