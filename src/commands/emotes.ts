@@ -5,7 +5,7 @@ const emotes = async (
     cmdArgs: CommandArgs
 ) => {
     cmdArgs.text = cmdArgs.text.slice(1);
-    const command = cmdArgs.text[0];
+    const command = cmdArgs.text[0].toLowerCase();
     const cmdoptions: EmoteCommandOptions = {};
 
     const clientInfo= {
