@@ -155,10 +155,10 @@ const emotes = async (
             //     cmdArgs.channel,
             // );
 
-            if (!permcheckadd?.success) {
-                response = permcheckadd?.error?.errorMessage;
-                break;
-            }
+            // if (!permcheckadd?.success) {
+            //     response = permcheckadd?.error?.errorMessage;
+            //     break;
+            // }
 
             const isYoinkDefault = cmdoptions["default"] ? true : false;
 
