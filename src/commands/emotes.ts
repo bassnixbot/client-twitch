@@ -163,11 +163,11 @@ const emotes = async (
             const isYoinkDefault = cmdoptions["default"] ? true : false;
 
             const yoinkquerybody = {
-                source: cmdoptions["source"],
                 owner: cmdoptions["owner"],
                 emoterename: cmdoptions["rename"],
                 defaultname: isYoinkDefault,
                 targetemotes: content,
+                source: cmdArgs.channel,
                 targetchannel: clientInfo.userInfo.userName,
                 clientInfo: clientInfo
             };
