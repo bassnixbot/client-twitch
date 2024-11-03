@@ -4,11 +4,15 @@ import { neon } from "@neondatabase/serverless";
 import { db } from "./src/db";
 import { dbchannels, dbcommands, type SelectCommand } from "./src/schema";
 import { eq } from "drizzle-orm";
+import { config } from "dotenv";
 import commands from "./src/commands";
 import tmi from "tmi.js";
 
-const JOIN_LIMIT = 10;
-const JOIN_INTERVAL = 10000; // 10 seconds
+config({ path: ".env" });
+
+// Load JOIN_LIMIT and JOIN_INTERVAL from environment variables
+const JOIN_LIMIT = parseInt(process.env.JOIN_LIMIT || '20', 10); // Default to 20 if not set
+const JOIN_INTERVAL = parseInt(process.env.JOIN_INTERVAL || '10000', 10); // Default to 10000ms if not set
 
 const main = async () => {
     const channelquery = await db
