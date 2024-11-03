@@ -80,37 +80,43 @@ const commands = async (
       },
     };
 
-    const response = await axios.post<APIResponse<any>>(
-      commandUrl,
-      queryParams,
-    );
+    try {
 
-    if (!response.data.success) {
-      const errMsg = response.data.error?.errorMessage as string;
-      cmdArgs.client.say(cmdArgs.channel, errMsg);
-      return;
-    }
+      const response = await axios.post<APIResponse<any>>(
+        commandUrl,
+        queryParams,
+      );
 
-    switch (response.data.responseType) {
-      case ApiResponseType.reply:
-        cmdArgs.client.say(cmdArgs.channel, response.data.result, {
-          replyTo: cmdArgs.msg,
-        });
-        break;
+      if (!response.data.success) {
+        const errMsg = response.data.error?.errorMessage as string;
+        cmdArgs.client.say(cmdArgs.channel, errMsg);
+        return;
+      }
 
-      case ApiResponseType.message:
-        cmdArgs.client.say(cmdArgs.channel, response.data.result);
-        break;
+      switch (response.data.responseType) {
+        case ApiResponseType.reply:
+          cmdArgs.client.say(cmdArgs.channel, response.data.result, {
+            replyTo: cmdArgs.msg,
+          });
+          break;
 
-      case ApiResponseType.message_array:
-        const messageArray = response.data.result as string[];
-        messageArray.forEach((element) => {
-          cmdArgs.tmiClient.say(cmdArgs.channel, element);
-        });
-        break;
+        case ApiResponseType.message:
+          cmdArgs.client.say(cmdArgs.channel, response.data.result);
+          break;
 
-      default:
-        break;
+        case ApiResponseType.message_array:
+          const messageArray = response.data.result as string[];
+          messageArray.forEach((element) => {
+            cmdArgs.tmiClient.say(cmdArgs.channel, element);
+          });
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('An error occurred during the Axios call:', error);
+      // Handle the error or retry the request if needed
     }
   } else {
     console.log("Command not found");
