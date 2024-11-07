@@ -7,6 +7,9 @@ import { eq } from "drizzle-orm";
 import { config } from "dotenv";
 import commands from "./src/commands";
 import tmi from "tmi.js";
+import foundReminder from "./src/commands/foundreminder";
+import logger from "./src/utils/logger";
+import commandlogger from "./src/utils/commandlogger";
 
 config({ path: ".env" });
 
@@ -73,18 +76,17 @@ const connecttwitch = (channels: string[], commandslist: SelectCommand[]) => {
         }
     }, JOIN_INTERVAL);
 
-    chatClient.onMessage(
-        async (
-            channel: string,
-            username: string,
-            text: string,
-            msg: ChatMessage,
-        ) => {
-            if (username === "bassnixbot") return;
+  chatClient.onMessage(
+    async (
+      channel: string,
+      username: string,
+      text: string,
+      msg: ChatMessage,
+    ) => {
+      logger.info(`[#${channel}] <${username}>: ${text}`);            
+      if (username === "bassnixbot") return;
 
-            text = text.replace(/^@\w+\s*/, "").trim();
-
-            console.log(text);
+      text = text.replace(/^@\w+\s*/, "").trim();
 
             let cmd = text.split(" ");
             if (msg.isReply) {
@@ -100,13 +102,13 @@ const connecttwitch = (channels: string[], commandslist: SelectCommand[]) => {
             const cmdSign = "!";
             if (text[0] !== cmdSign) return;
 
-            if (cmd[0][0] === cmdSign) {
-                if (cmd[0].length === 1)
-                    cmd = cmd.filter((command) => command !== cmd[0]);
-                else cmd[0] = cmd[0].replace("!", "");
-            }
-
-            cmd = cmd.filter((text) => text !== "");
+      if (cmd[0][0] === cmdSign) {
+        if (cmd[0].length === 1)
+          cmd = cmd.filter((command) => command !== cmd[0]);
+        else cmd[0] = cmd[0].replace("!", "");
+      }
+ 
+      cmd = cmd.filter((text) => text !== "");
 
             commands(
                 {
@@ -146,4 +148,4 @@ const joinChannelsBatch = async (
     );
 };
 
-main().catch(console.error);
+main().catch(error => {commandlogger.info(`error at main - ${error}`)});

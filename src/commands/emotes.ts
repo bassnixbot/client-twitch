@@ -1,35 +1,39 @@
 import axios from "axios";
-import type { APIResponse, Command, CommandArgs, EmoteCommandOptions } from "../types";
+import type {
+    APIResponse,
+    Command,
+    CommandArgs,
+    EmoteCommandOptions,
+} from "../types";
+import commandlogger from "../utils/commandlogger";
 
-const emotes = async (
-    cmdArgs: CommandArgs
-) => {
+const emotes = async (cmdArgs: CommandArgs) => {
     cmdArgs.text = cmdArgs.text.slice(1);
     const command = cmdArgs.text[0].toLowerCase();
     const cmdoptions: EmoteCommandOptions = {};
 
-    const clientInfo= {
-      messageId: cmdArgs.msg.id,
-      channel: cmdArgs.channel,
-      message:cmdArgs.msg.text,
-      parentMessageId: cmdArgs.msg.threadMessageId,
-      userInfo: {
-        userName: cmdArgs.msg.userInfo.userName,
-        displayName: cmdArgs.msg.userInfo.displayName,
-        color: cmdArgs.msg.userInfo.color,
-        badges: cmdArgs.msg.userInfo.badges,
-        badgeInfo: cmdArgs.msg.userInfo.badgeInfo,
-        userId: cmdArgs.msg.userInfo.userId,
-        userType: cmdArgs.msg.userInfo.userType,
-        isBroadcaster: cmdArgs.msg.userInfo.isBroadcaster,
-        isSubscriber: cmdArgs.msg.userInfo.isSubscriber,
-        isFounder: cmdArgs.msg.userInfo.isFounder,
-        isMod: cmdArgs.msg.userInfo.isMod,
-        isVip: cmdArgs.msg.userInfo.isVip,
-        isArtist: cmdArgs.msg.userInfo.isArtist,
-      },
+    const clientInfo = {
+        messageId: cmdArgs.msg.id,
+        channel: cmdArgs.channel,
+        message: cmdArgs.msg.text,
+        parentMessageId: cmdArgs.msg.threadMessageId,
+        userInfo: {
+            userName: cmdArgs.msg.userInfo.userName,
+            displayName: cmdArgs.msg.userInfo.displayName,
+            color: cmdArgs.msg.userInfo.color,
+            badges: cmdArgs.msg.userInfo.badges,
+            badgeInfo: cmdArgs.msg.userInfo.badgeInfo,
+            userId: cmdArgs.msg.userInfo.userId,
+            userType: cmdArgs.msg.userInfo.userType,
+            isBroadcaster: cmdArgs.msg.userInfo.isBroadcaster,
+            isSubscriber: cmdArgs.msg.userInfo.isSubscriber,
+            isFounder: cmdArgs.msg.userInfo.isFounder,
+            isMod: cmdArgs.msg.userInfo.isMod,
+            isVip: cmdArgs.msg.userInfo.isVip,
+            isArtist: cmdArgs.msg.userInfo.isArtist,
+        },
     };
-    
+
     let contentStartIndex = -1; // Index where message content starts
     console.log(cmdArgs.channel);
 
@@ -40,7 +44,8 @@ const emotes = async (
                 cmdoptions[flagName] = true;
             } else {
                 const flag = cmdArgs.text[i].slice(1);
-                const value = i + 1 < cmdArgs.text.length ? cmdArgs.text[i + 1] : undefined;
+                const value =
+                    i + 1 < cmdArgs.text.length ? cmdArgs.text[i + 1] : undefined;
                 cmdoptions[flag] = value;
                 i++;
             }
@@ -50,15 +55,18 @@ const emotes = async (
         }
     }
 
-    const content = contentStartIndex !== -1 ? cmdArgs.text.slice(contentStartIndex) : "";
+    const content =
+        contentStartIndex !== -1 ? cmdArgs.text.slice(contentStartIndex) : "";
 
     if (!content) {
-        cmdArgs.client.say(cmdArgs.channel, "Please provide the command argument", {replyTo: cmdArgs.msg});
+        cmdArgs.client.say(cmdArgs.channel, "Please provide the command argument", {
+            replyTo: cmdArgs.msg,
+        });
         return;
     }
 
     let response: string | undefined;
-    
+
     switch (command) {
         case "search":
             let queryparams;
@@ -103,7 +111,7 @@ const emotes = async (
             const removequerybody = {
                 targetemotes: content,
                 targetchannel: cmdArgs.channel,
-                clientInfo: clientInfo
+                clientInfo: clientInfo,
             };
 
             const apiurl_remove = `${Bun.env.EMOTE_SERVICE_URL}/emotes/remove`;
@@ -138,7 +146,7 @@ const emotes = async (
                 defaultname: isdefault,
                 targetemotes: content,
                 targetchannel: cmdArgs.channel,
-                clientInfo: clientInfo
+                clientInfo: clientInfo,
             };
 
             const apiurl_add = `${Bun.env.EMOTE_SERVICE_URL}/emotes/add`;
@@ -147,7 +155,6 @@ const emotes = async (
 
         case "steal":
         case "yoink":
-
             // dont do perm check bc yoink
             // // check for perms
             // const permcheckyoink = await checkseventvpermission(
@@ -169,7 +176,7 @@ const emotes = async (
                 targetemotes: content,
                 source: cmdArgs.channel,
                 targetchannel: clientInfo.userInfo.userName,
-                clientInfo: clientInfo
+                clientInfo: clientInfo,
             };
 
             const apiurl_yoink = `${Bun.env.EMOTE_SERVICE_URL}/emotes/add`;
@@ -195,7 +202,7 @@ const emotes = async (
                 targetemotes: [targetemote],
                 emoterename: emoterename,
                 targetchannel: cmdArgs.channel,
-                clientInfo: clientInfo
+                clientInfo: clientInfo,
             };
 
             const apiurl_rename = `${Bun.env.EMOTE_SERVICE_URL}/emotes/rename`;
@@ -206,9 +213,12 @@ const emotes = async (
             break;
     }
 
-    console.log(response);
+    commandlogger.info(
+        `[#${cmdArgs.channel}] <${cmdArgs.username}>: response command - emotes; res - ${response}`,
+    );
+
     if (response) {
-        cmdArgs.client.say(cmdArgs.channel, response, {replyTo: cmdArgs.msg});
+        cmdArgs.client.say(cmdArgs.channel, response, { replyTo: cmdArgs.msg });
     }
 };
 
@@ -242,7 +252,6 @@ const runEmoteAPI = async (
     querybody: any,
     apiurl: string,
 ): Promise<string | undefined> => {
-    console.log(querybody);
 
     try {
         const response = await axios.post<APIResponse<string>>(apiurl, querybody);
@@ -290,7 +299,7 @@ const checkseventvpermission = async (
                     errorCode: "1002",
                 },
                 result: undefined,
-                responseType: undefined
+                responseType: undefined,
             };
 
         const getChannelEditorAccess = await axios.get<APIResponse<string[]>>(
@@ -313,14 +322,14 @@ const checkseventvpermission = async (
                     errorCode: "1003",
                 },
                 result: undefined,
-                responseType: undefined
+                responseType: undefined,
             };
 
         return {
             success: true,
             error: undefined,
             result: undefined,
-            responseType: undefined
+            responseType: undefined,
         };
     } catch (error: any) {
         console.log(error);
@@ -332,7 +341,7 @@ const checkseventvpermission = async (
                     errorCode: "1001",
                 },
                 result: undefined,
-                responseType: undefined
+                responseType: undefined,
             };
 
         const permcheckError = error.response.data as APIResponse<string>;

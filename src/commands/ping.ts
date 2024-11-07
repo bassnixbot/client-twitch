@@ -4,6 +4,7 @@ import {
     HumanizeDurationLanguage,
 } from "humanize-duration-ts";
 import type { CommandArgs } from "../types";
+import commandlogger from "../utils/commandlogger";
 
 const ping = (
     cmdArgs: CommandArgs
@@ -18,9 +19,15 @@ const ping = (
         delimiter: " and ",
     });
 
+    const message = `MrDestructoid bot (V2) has been running for ${formattedTime} pong.`;
+ 
+    commandlogger.info(
+        `[#${cmdArgs.channel}] <${cmdArgs.username}>: response command - ping; args - ${message}`,
+    );
+
     cmdArgs.client.say(
         cmdArgs.channel,
-        `MrDestructoid bot (V2) has been running for ${formattedTime} pong.`,
+        message,
         {replyTo: cmdArgs.msg}
     );
 };

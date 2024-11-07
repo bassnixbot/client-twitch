@@ -23,6 +23,9 @@
     "drizzle-orm": "^0.31.2",
     "humanize-duration-ts": "^2.1.1",
     "pg": "^8.13.1",
-    "tmi.js": "^1.8.5"
+    "redis": "^4.7.0",
+    "tmi.js": "^1.8.5",
+    "winston": "^3.16.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }
